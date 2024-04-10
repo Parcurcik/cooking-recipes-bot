@@ -1,20 +1,14 @@
 package ru.naumen.cookingrecipesbot.models;
 import jakarta.persistence.*;
 import lombok.Data;
+import org.jetbrains.annotations.NotNull;
 
 @Entity
 @Data
 @Table(name = "recipes")
 public class Recipe {
-    public Recipe(Long id, String name, String description, String ingredients) {
-        this.id = id;
-        this.name = name;
-        this.description = description;
-        this.ingredients = ingredients;
-    }
 
     @Id
-    @Column(name = "user_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
@@ -22,19 +16,19 @@ public class Recipe {
     private String name;
 
     @Column(name = "description")
-    private String description;
+    private byte[] description;
 
     @Column(name = "ingredients")
-    private String ingredients;
+    private byte[] ingredients;
 
-    public Recipe() {
-
-    }
-
-    public Recipe(String name, String description, String ingredients) {
+    public Recipe(String name, byte[] description, byte[] ingredients) {
         this.name = name;
         this.description = description;
         this.ingredients = ingredients;
+    }
+
+    public Recipe() {
+
     }
 }
 
