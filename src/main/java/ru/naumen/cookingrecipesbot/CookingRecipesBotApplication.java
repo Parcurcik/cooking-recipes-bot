@@ -11,8 +11,6 @@ import ru.naumen.cookingrecipesbot.bots.TelegramBot;
 public class CookingRecipesBotApplication {
 
 	public static void main(String[] args) throws TelegramApiException {
-		TelegramBotsApi bot = new TelegramBotsApi(DefaultBotSession.class);
-		bot.registerBot(new TelegramBot());
 		SpringApplication.run(CookingRecipesBotApplication.class, args);
 	}
 
