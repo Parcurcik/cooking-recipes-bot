@@ -21,7 +21,4 @@ public class User {
 
     @Column(name = "allergies")
     private String allergies;
-
-
-
 }
