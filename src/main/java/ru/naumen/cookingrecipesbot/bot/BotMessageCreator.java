@@ -38,7 +38,7 @@ public class BotMessageCreator {
     }
 
     /**
-     * Создается сообщение для пользователя с ответом и кнопками в виде автозапчастей на выбранный автомобиль.
+     * Создается сообщение для пользователя с ответом и списком тортов.
      */
     public MessageToUser createMessageNamesRecipes(long chatId) {
         String answer = "";
