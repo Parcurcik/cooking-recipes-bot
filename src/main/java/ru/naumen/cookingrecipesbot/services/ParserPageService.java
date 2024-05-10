@@ -16,21 +16,34 @@ public class ParserPageService {
     public ArrayList<Recipe> getAllRecipes() throws IOException {
         ArrayList<Recipe> listRecipes = new ArrayList<>();
         try {
-            Document doc = Jsoup.connect("https://www.russianfood.com/recipes/bytype/?fid=39").get();
-            Elements elements = doc.getElementsByClass("recipe_list_new recipe_list_new2");
-            Element cakes = elements.get(0);
-            Elements cakeElements = cakes.getElementsByClass("in_seen");
-            for (Element cake : cakeElements) {
-                Element titleElement = cake.selectFirst("div.title_o");
-                String name = titleElement.select("h3").text();
-                String description = cake.select("div.announce").text();
-                String ingredients = cake.select("div.announce_o").select("div.announce_sub").text();
-                Recipe recipe = new Recipe(name, description.getBytes(), ingredients.getBytes());
+            Document doc = Jsoup.connect("https://menunedeli.ru/chto-prigotovit-na-obed-i-uzhin/sladosti/torty/?ysclid=lv26ds32yt839374533").get();
+            Elements recipeElements = doc.getElementsByClass("main-post-lst");
+            Element cakes = recipeElements.get(0);
+            Elements cakeElements = cakes.getElementsByClass("post-card-in-lst row no-gutters");
+            for (Element recipeElement : cakeElements) {
+                Element metaTag = recipeElement.select("meta[itemprop=name]").first();
+                String name = metaTag.attr("content");
+                String description = "";
+                try {
+                    description = recipeElement.selectFirst(".part-1").text();
+                }catch (NullPointerException e){
+                    description = "Вкусный торт";
+                }
+
+                String ingredients = "";
+
+                Elements ingredientElements = recipeElement.getElementsByClass("ingredients-lst");
+
+                for (Element ingredientElement : ingredientElements) {
+                    String ingredient = ingredientElement.select(".name").text();
+                    ingredients += ingredient + " ";
+                }
+                Recipe recipe = new Recipe(name, description.getBytes(), ingredients.toString().getBytes());
                 listRecipes.add(recipe);
             }
-            return listRecipes;
-        } catch (Exception e) {
-            return getAllRecipes();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
+        return listRecipes;
     }
 }
