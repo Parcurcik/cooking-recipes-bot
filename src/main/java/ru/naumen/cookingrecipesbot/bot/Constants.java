@@ -5,6 +5,7 @@ public class Constants {
     public static final String COMMAND_EXIT = "/exit";
     public static final String COMMAND_HELP = "/help";
     public static final String COMMAND_RECIPES = "/recipes";
+    public static final String COMMAND_RECIPES_LIST = "/recipes_list";
     public static final String HELP = """
             Справка о доступных командах:
             /recipes

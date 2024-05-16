@@ -1,30 +1,31 @@
 package ru.naumen.cookingrecipesbot.domains.message;
 
+import lombok.Getter;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
+
 public class MessageToUser {
-    public MessageToUser(long chatId, String text) {
+
+    @Getter
+    private final long chatId;
+    @Getter
+    private final String text;
+    @Getter
+    private final String inlineKeyboardMarkup;
+    @Getter
+    private final Long callBackRecipeId;
+
+    public MessageToUser(long chatId, String text, String inlineKeyboardMarkup) {
         this.chatId = chatId;
         this.text = text;
+        this.inlineKeyboardMarkup = inlineKeyboardMarkup;
+        this.callBackRecipeId = null;
     }
 
-    private final long chatId;
-    private final String text;
-
-    /**
-     * Получение id чата
-     *
-     * @return Id текущего чата
-     */
-    public long getChatId() {
-        return chatId;
-    }
-
-    /**
-     * Получение текста сообщения
-     *
-     * @return Текст сообщения
-     */
-    public String getText() {
-        return text;
+    public MessageToUser(long chatId, String text, String inlineKeyboardMarkup, Long callBackRecipeId) {
+        this.chatId = chatId;
+        this.text = text;
+        this.inlineKeyboardMarkup = inlineKeyboardMarkup;
+        this.callBackRecipeId = callBackRecipeId;
     }
 
 }
