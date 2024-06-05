@@ -1,7 +1,7 @@
 package ru.naumen.cookingrecipesbot.domains.message;
 
 /**
- * Сообщение от пользователя
+ * Класс сообщения от пользователя
  */
 public class MessageFromUser {
     private final long chatId;

@@ -13,6 +13,11 @@ import java.util.ArrayList;
 @Service
 public class ParserPageService {
 
+    /**
+     * Парсинг сайта
+     * @return
+     * @throws IOException
+     */
     public ArrayList<Recipe> getAllRecipes() throws IOException {
         ArrayList<Recipe> listRecipes = new ArrayList<>();
         try {
@@ -38,6 +43,8 @@ public class ParserPageService {
                     String ingredient = ingredientElement.select(".name").text();
                     ingredients += ingredient + " ";
                 }
+                if (ingredients.equals(""))
+                    continue;
                 Recipe recipe = new Recipe(name, description.getBytes(), ingredients.toString().getBytes());
                 listRecipes.add(recipe);
             }

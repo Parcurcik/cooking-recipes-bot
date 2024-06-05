@@ -7,10 +7,13 @@ import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.commands.BotCommand;
 import org.telegram.telegrambots.meta.api.objects.commands.scope.BotCommandScopeDefault;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import ru.naumen.cookingrecipesbot.bot.Bot;
 import ru.naumen.cookingrecipesbot.bot.BotConfig;
 import ru.naumen.cookingrecipesbot.bot.BotLogic;
+import ru.naumen.cookingrecipesbot.domains.Recipe;
 import ru.naumen.cookingrecipesbot.domains.message.MessageFromUser;
 import ru.naumen.cookingrecipesbot.domains.message.MessageToUser;
 import ru.naumen.cookingrecipesbot.services.RecipeService;
@@ -52,16 +55,40 @@ public class TelegramBot extends TelegramLongPollingBot implements Bot{
                 throw new RuntimeException(e);
             }
         }
-        MessageFromUser message = new MessageFromUser(
-                update.getMessage().getChatId(),
-                update.getMessage().getText(),
-                update.getMessage().getChat().getFirstName()
-        );
-        MessageToUser messageToUser = botLogic.onUpdateReceived(message);
-        if (messageToUser == null) {
-            return;
+        if (update.hasCallbackQuery()) {
+            MessageFromUser message = new MessageFromUser(
+                    update.getCallbackQuery().getMessage().getChatId(),
+                    update.getCallbackQuery().getData(),
+                    update.getCallbackQuery().getFrom().getUserName()
+            );
+            MessageToUser messageToUser = null;
+            try {
+                messageToUser = botLogic.onUpdateReceived(message);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+            if (messageToUser == null) {
+                return;
+            }
+            this.sendMessage(messageToUser);
         }
-        this.sendMessage(messageToUser);
+        else {
+            MessageFromUser message = new MessageFromUser(
+                    update.getMessage().getChatId(),
+                    update.getMessage().getText(),
+                    update.getMessage().getChat().getFirstName()
+            );
+            MessageToUser messageToUser = null;
+            try {
+                messageToUser = botLogic.onUpdateReceived(message);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+            if (messageToUser == null) {
+                return;
+            }
+            this.sendMessage(messageToUser);
+        }
     }
 
     @Override
@@ -83,10 +110,54 @@ public class TelegramBot extends TelegramLongPollingBot implements Bot{
         }
     }
 
+    /**
+     * Создание кнопок вспех тортов
+     * @return
+     */
+    private InlineKeyboardMarkup getKeyBoardAllCakes() {
+        InlineKeyboardMarkup keyboardMarkup = new InlineKeyboardMarkup();
+        List<List<InlineKeyboardButton>> keyboardRows = new ArrayList<>();
+        for (Recipe recipe: recipeService.getAll()) {
+            List<InlineKeyboardButton> row = new ArrayList<>();
+            InlineKeyboardButton newButton = new InlineKeyboardButton();
+            newButton.setText(recipe.getName());
+            newButton.setCallbackData(recipe.getId().toString());
+            row.add(newButton);
+            keyboardRows.add(row);
+        }
+        keyboardMarkup.setKeyboard(keyboardRows);
+        return keyboardMarkup;
+    }
+
+    /**
+     * Создание кнопок для добавления рецепта
+     * @param recipeId
+     * @return
+     */
+    private InlineKeyboardMarkup AddButton(Long recipeId){
+        InlineKeyboardMarkup keyboardMarkup = new InlineKeyboardMarkup();
+        List<List<InlineKeyboardButton>> keyboardRows = new ArrayList<>();
+        List<InlineKeyboardButton> row = new ArrayList<>();
+        InlineKeyboardButton newButton = new InlineKeyboardButton();
+        newButton.setText("Добавить рецепт");
+        newButton.setCallbackData("Добавить рецепт " + recipeId.toString());
+        row.add(newButton);
+        keyboardRows.add(row);
+        keyboardMarkup.setKeyboard(keyboardRows);
+        return keyboardMarkup;
+    }
+
+    /**
+     * Конвертация сообщения
+     * @param messageToUser
+     * @return
+     */
     private SendMessage convertMessageToUserToSendMessage(MessageToUser messageToUser) {
         SendMessage sendMessage = new SendMessage();
         sendMessage.setChatId(messageToUser.getChatId());
         if (messageToUser.getText() != null) sendMessage.setText(messageToUser.getText());
+        if (messageToUser.getInlineKeyboardMarkup().equals("recipes")) sendMessage.setReplyMarkup(getKeyBoardAllCakes());
+        if (messageToUser.getInlineKeyboardMarkup().equals("add")) sendMessage.setReplyMarkup(AddButton(messageToUser.getCallBackRecipeId()));
         return sendMessage;
     }
 

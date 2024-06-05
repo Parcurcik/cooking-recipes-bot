@@ -1,5 +1,6 @@
 package ru.naumen.cookingrecipesbot.domains;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
 @Entity
@@ -12,13 +13,24 @@ public class ShoppingList {
     @Column(name = "shopping_list_id")
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "user_id")
-    private User user;
+    @Column(name = "user_id")
+    private Long userId;
 
-    @Column(name = "products")
-    private String products;
+    @Column(name = "name")
+    private String name;
 
+    @Column(name = "number_recipe")
+    private Long number_recipe;
+
+    public ShoppingList(Long userId, String name, Long number_recipe) {
+        this.userId = userId;
+        this.name = name;
+        this.number_recipe = number_recipe;
+    }
+
+    public ShoppingList() {
+
+    }
 }
 
 
