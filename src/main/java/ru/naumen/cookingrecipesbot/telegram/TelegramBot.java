@@ -110,6 +110,10 @@ public class TelegramBot extends TelegramLongPollingBot implements Bot{
         }
     }
 
+    /**
+     * Создание кнопок вспех тортов
+     * @return
+     */
     private InlineKeyboardMarkup getKeyBoardAllCakes() {
         InlineKeyboardMarkup keyboardMarkup = new InlineKeyboardMarkup();
         List<List<InlineKeyboardButton>> keyboardRows = new ArrayList<>();
@@ -125,6 +129,11 @@ public class TelegramBot extends TelegramLongPollingBot implements Bot{
         return keyboardMarkup;
     }
 
+    /**
+     * Создание кнопок для добавления рецепта
+     * @param recipeId
+     * @return
+     */
     private InlineKeyboardMarkup AddButton(Long recipeId){
         InlineKeyboardMarkup keyboardMarkup = new InlineKeyboardMarkup();
         List<List<InlineKeyboardButton>> keyboardRows = new ArrayList<>();
@@ -138,6 +147,11 @@ public class TelegramBot extends TelegramLongPollingBot implements Bot{
         return keyboardMarkup;
     }
 
+    /**
+     * Конвертация сообщения
+     * @param messageToUser
+     * @return
+     */
     private SendMessage convertMessageToUserToSendMessage(MessageToUser messageToUser) {
         SendMessage sendMessage = new SendMessage();
         sendMessage.setChatId(messageToUser.getChatId());

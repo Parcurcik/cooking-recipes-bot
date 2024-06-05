@@ -2,6 +2,7 @@ package ru.naumen.cookingrecipesbot.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import ru.naumen.cookingrecipesbot.domains.ShoppingList;
 import ru.naumen.cookingrecipesbot.domains.User;
 import ru.naumen.cookingrecipesbot.repositories.UserRepository;
 
@@ -16,15 +17,24 @@ public class UserService {
     }
     private final UserRepository userRepository;
 
+    /**
+     * Добавить пользователя из таблицы users
+     * @param user
+     */
     public void addUser(User user) {
         userRepository.save(user);
-//        for(User lastUser: userRepository.findAllById(Collections.singleton(user.getUser_id()))){
-//            lastUser.setNumber_recipe(user.getNumber_recipe());
-//        }
     }
 
-//    public Long getLastRecipeId(User user){
-//        for (int i = 0; i < userRepository.)
-//        userRepository.findAllById(user.getUser_id())
-//    }
+    /**
+     * Удалить пользователся из таблицы users
+     * @param chatId
+     */
+    public void removeUser(long chatId) {
+        for(User user : userRepository.findAll()){
+            if(user.getUser_id().equals(chatId)){
+                userRepository.delete(user);
+            }
+        }
+    }
+
 }

@@ -22,10 +22,19 @@ public class RecipeService {
         recipeRepository.saveAll(listRecipes);
     }
 
+    /**
+     * Получить рецепт торта по id
+     * @param id
+     * @return
+     */
     public Optional<Recipe> getRecipeById(Long id) {
        return recipeRepository.findById(id);
     }
 
+    /**
+     * Получить все имеющиеся рецепты
+     * @return
+     */
     public List<Recipe> getAll(){
         return recipeRepository.findAll();
     }

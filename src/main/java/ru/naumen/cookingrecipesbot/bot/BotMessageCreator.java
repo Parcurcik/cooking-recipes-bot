@@ -2,18 +2,15 @@ package ru.naumen.cookingrecipesbot.bot;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
-import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
-import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 import ru.naumen.cookingrecipesbot.domains.Recipe;
-import ru.naumen.cookingrecipesbot.domains.ShoppingList;
 import ru.naumen.cookingrecipesbot.domains.message.MessageToUser;
 import ru.naumen.cookingrecipesbot.services.RecipeService;
 import ru.naumen.cookingrecipesbot.services.ShoppingListService;
+import ru.naumen.cookingrecipesbot.services.UserService;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.List;
 
 import static ru.naumen.cookingrecipesbot.bot.Constants.HELP;
 import static ru.naumen.cookingrecipesbot.bot.Constants.TEXT_START;
@@ -23,6 +20,7 @@ import static ru.naumen.cookingrecipesbot.bot.Constants.TEXT_START;
 public class BotMessageCreator {
     private final RecipeService recipeService;
     private final ShoppingListService shoppingListService;
+    private final UserService userService;
     /**
      * Создается сообщение для пользователя с текстом приветствия и списком возможных команд бота.
      */
@@ -42,8 +40,10 @@ public class BotMessageCreator {
     /**
      * Создается сообщение для пользователя с текстом о закрытии каталога товаров и параметром, указывающим на удаление кнопок
      */
-    public MessageToUser createMessageDeleteButtons(long chatId) {
+    public MessageToUser createMessageDeleteButtons(long chatId) throws IOException {
         String answer = "Вы закрыли каталог тортов";
+        userService.removeUser(chatId);
+        shoppingListService.removeUserRecipes(chatId);
         return new MessageToUser(chatId, answer,"false");
     }
 
@@ -77,11 +77,34 @@ public class BotMessageCreator {
         return new MessageToUser(chatId, answer, "add", recipeId);
     }
 
+    /**
+     * Выводится сообщение и добавляется торт
+     * @param chatId
+     * @return
+     */
     public MessageToUser addRecipeInList(long chatId) {
         String answer = "Рецепт добавлен";
         return new MessageToUser(chatId, answer, "false");
     }
 
+    /**
+     * Выводится сообщение и очищается список добавленных тортов
+     * @param chatId
+     * @return
+     * @throws IOException
+     */
+    public MessageToUser deleteListRecipes(long chatId) throws IOException {
+        shoppingListService.clearList();
+        String answer = "Список добавленных товаров очищен";
+        return new MessageToUser(chatId, answer, "false");
+    }
+
+    /**
+     * Создается сообщение со списком добавленных тортов
+     * @param chatId
+     * @return
+     * @throws IOException
+     */
     public MessageToUser createMessageListRecipes(Long chatId) throws IOException {
         ArrayList<Long> recipeIds = shoppingListService.getAddNumbersRecipes(chatId);
         String answer = "";
@@ -92,6 +115,8 @@ public class BotMessageCreator {
                     + "Ингридиенты: " + new String(recipe.getIngredients(), StandardCharsets.UTF_8) + "\n"
                     + "\n";
         }
+        if (answer.equals(""))
+            answer = "Ваш список товаров пуст";
         return new MessageToUser(chatId, answer, "false");
     }
 }

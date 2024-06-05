@@ -1,8 +1,10 @@
 package ru.naumen.cookingrecipesbot.domains.message;
 
 import lombok.Getter;
-import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 
+/**
+ * Класс овтетного сообщения пользователю
+ */
 public class MessageToUser {
 
     @Getter

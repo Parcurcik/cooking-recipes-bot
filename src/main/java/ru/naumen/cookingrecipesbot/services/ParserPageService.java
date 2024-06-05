@@ -13,6 +13,11 @@ import java.util.ArrayList;
 @Service
 public class ParserPageService {
 
+    /**
+     * Парсинг сайта
+     * @return
+     * @throws IOException
+     */
     public ArrayList<Recipe> getAllRecipes() throws IOException {
         ArrayList<Recipe> listRecipes = new ArrayList<>();
         try {

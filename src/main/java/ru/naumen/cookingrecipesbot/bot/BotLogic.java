@@ -51,6 +51,9 @@ public class BotLogic {
             case COMMAND_RECIPES_LIST -> {
                 return botMessageCreator.createMessageListRecipes(chatId);
             }
+            case COMMAND_DELETE -> {
+                return botMessageCreator.deleteListRecipes(chatId);
+            }
             default -> {
                 for(Recipe recipe: recipeService.getAll()){
                     if (messageText.equals(recipe.getId().toString())){
